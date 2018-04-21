@@ -1,0 +1,14 @@
+Listen {{ vhost_webserver_port }}
+
+<VirtualHost *:{{ vhost_webserver_port }}>
+	ServerAdmin webmaster@{{ vhost_webserver_address }}
+	DocumentRoot {{ ansible_local.httpd_facts.httpd_custom_facts.httpd_vhost_directory }}/{{ vhost_webserver_address }}
+  	ServerName {{ vhost_webserver_address }}
+  	ErrorLog "logs/{{ vhost_webserver_address }}-error_log"
+  	TransferLog "logs/{{ vhost_webserver_address }}-access_log"
+
+	<Directory {{ ansible_local.httpd_facts.httpd_custom_facts.httpd_vhost_directory }}/{{ vhost_webserver_address }}>
+    		AllowOverride None
+    		Require all granted
+	</Directory>
+</VirtualHost>

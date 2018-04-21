@@ -1,0 +1,37 @@
+---
+# tasks file for jamie.install-httpd
+- name: Install httpd package
+  yum:
+    name: httpd
+    state: latest
+
+- name: Start and enable the httpd service
+  service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Create the custom fact directoy
+  file:
+    path: /etc/ansible/facts.d
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: Install the httpd custom fact file
+  template:
+    src: httpd_facts.fact.j2
+    dest: /etc/ansible/facts.d/httpd_facts.fact
+    owner: root
+    group: root
+    mode: 644
+- name: Run the Setup module to update to the latest veriso of facts
+  setup:
+
+- name: Create "{{ ansible_local.httpd_facts.httpd_custom_facts.httpd_vhost_directory }}"  directory to serve content
+  file:
+    path: "{{ ansible_local.httpd_facts.httpd_custom_facts.httpd_vhost_directory }}"
+    state: directory
+    recurse: true
+  register: httpd_vhost_directory_present
