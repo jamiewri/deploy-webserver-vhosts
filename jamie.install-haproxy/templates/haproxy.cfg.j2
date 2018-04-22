@@ -27,5 +27,7 @@ backend app-servers
     option forwardfor
 
 {% for h in groups['web'] %}
+
    server {{ hostvars[h].ansible_hostname }} {{ hostvars[h].ansible_default_ipv4.address }}:80 cookie {{ hostvars[h].ansible_hostname }} check
+
 {% endfor %}

@@ -26,6 +26,13 @@
     owner: root
     group: root
     mode: 644
+- name: Install the httpd vhost custom fact file
+  template:
+    src: httpd_vhost.fact.j2
+    dest: /etc/ansible/facts.d/httpd_vhost.fact
+    owner: root
+    group: root
+    mode: 644
 - name: Run the Setup module to update to the latest veriso of facts
   setup:
 

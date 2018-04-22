@@ -35,6 +35,18 @@
     mode: 0644
   notify: httpd_restart 
 
+
+- name: Find pattern in array of config files for ansible fact
+  lineinfile:
+    path: /etc/ansible/facts.d/httpd_vhost.fact
+    state: present
+    line: "{{ item.line }}"
+    regexp: "{{ item.regex }}"
+  with_items:
+    - { line: "{{ vhost_webserver_address }} = {{ vhost_webserver_port }}", regex: "^{{ vhost_webserver_address }} = {{ vhost_webserver_port }}$" }
+
+
+#Firewalld config
 - name: Create filewalld rule for "{{ vhost_webserver_address }}" on port "{{ vhost_webserver_port }}/tcp"
   firewalld:
     port: "{{ vhost_webserver_port }}/tcp" 
@@ -42,6 +54,11 @@
     state: enabled
   notify: firewalld_restart
 
+
+
+
+
+# SELinux Config
 - name: Install semanage tool and dependancies
   yum:
     name: "{{ item }}"

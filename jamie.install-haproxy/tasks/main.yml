@@ -23,3 +23,31 @@
     dest: /etc/haproxy/haproxy.cfg
     mode: 644
   register: haproxy_restart
+
+- name: Enable SELinux
+  selinux:
+    policy: targeted
+    state: enforcing
+  when: se_linux_required is defined
+
+- name: Install semanage tool and dependancies
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - libselinux-python
+    - policycoreutils-python
+  when: se_linux_required is defined
+
+- name: Define port rule for http traffic is in place 
+  seport:
+    ports: 80
+    proto: tcp
+    setype: http_port_t
+    state: present
+  when: se_linux_required is defined
+- name: Set linux cap for haproxy binary
+  capabilities:
+    path: /usr/sbin/haproxy
+    capability: CAP_NET_BIND_SERVICE=+eip
+    state: present
