@@ -17,6 +17,15 @@
     mode: 0744
   register: filecontext
 
+- name: Find pattern in array of config files
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    state: present
+    line: "{{ item.line }}"
+    regexp: "{{ item.regex }}"
+  with_items:
+    - { line: "Listen {{ vhost_webserver_port }}", regex: "^Listen {{ vhost_webserver_port }}$" }
+
 - name: Install the vhost config file with j2 template for "{{ vhost_webserver_address }}"
   template:
     src: vhost.conf.j2
